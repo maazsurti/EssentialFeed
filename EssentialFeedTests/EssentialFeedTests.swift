@@ -2,11 +2,11 @@
 //  EssentialFeedTests.swift
 //  EssentialFeedTests
 //
-//  Created by Maaz Surti on 03/08/24.
+//  Created by Maaz Surti on 04/08/24.
 //
 
 import XCTest
-@testable import EssentialFeed
+import EssentialFeed
 
 final class EssentialFeedTests: XCTestCase {
 
@@ -28,7 +28,7 @@ final class EssentialFeedTests: XCTestCase {
 
     func testPerformanceExample() throws {
         // This is an example of a performance test case.
-        self.measure {
+        measure {
             // Put the code you want to measure the time of here.
         }
     }
