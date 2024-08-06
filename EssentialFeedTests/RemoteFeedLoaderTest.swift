@@ -7,47 +7,57 @@
 
 import XCTest
 
-class RemoteFeedLoader{
+class RemoteFeedLoader {
+    
     let client: HTTPClient
     
-    init(client: HTTPClient) {
+    let url: URL
+    
+    init(url: URL, client: HTTPClient) {
         self.client = client
+        self.url = url
     }
     
     func load() {
-        client.get(from: URL(string: "https://a-url.com")!)
+        client.get(from: url)
     }
 }
 
 protocol HTTPClient {
         
-    func get(from url: URL) 
-}
-
-class HTTPClientSpy: HTTPClient {
-    
-    var requestedURL: URL?
-    
-    func get(from url: URL) {
-        requestedURL = url
-    }
+    func get(from url: URL)
 }
 
 class RemoteFeedLoaderTests: XCTestCase {
     
     func testDoestNotRequestDataFromURL(){
-        let client = HTTPClientSpy()
-        _ = RemoteFeedLoader(client: client)
+        let (_, client) = makeSUT()
         XCTAssertNil(client.requestedURL)
     }
     
     func testRequestDataFromURL() {
         
-        let client = HTTPClientSpy()
-        let sut = RemoteFeedLoader(client: client)
-        
+        let url = URL(string: "https://a-given-url.com")!
+        let (sut, client) = makeSUT(url: url)
         sut.load()
         
-        XCTAssertNotNil(client.requestedURL)
+        XCTAssertEqual(client.requestedURL, url)
+    }
+    
+    // MARK: - Helpers
+    
+    private func makeSUT(url: URL = URL(string: "https://a-url.com")!) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
+        let client = HTTPClientSpy()
+        let sut = RemoteFeedLoader(url: url, client: client)
+        return (sut, client)
+    }
+    
+    private class HTTPClientSpy: HTTPClient {
+        
+        var requestedURL: URL?
+        
+        func get(from url: URL) {
+            requestedURL = url
+        }
     }
 }
